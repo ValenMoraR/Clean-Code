@@ -1,60 +1,157 @@
 # Todas las prueba sunitarias importan la biblioteca unittest
 import unittest
-from nomina1 import CalcularLiquidacion 
+from    Nomina import CalcularLiquidacion 
 
-class NominaTestCase(unittest.TestCase):
+class CalcularLiquidacionTest(unittest.TestCase):
 
-    def testLiquidacion1(self):
-        salario_base = 1000000
-        dias_trabajados = 30
-
-        # Cálculo del salario proporcional
-        salario_proporcional = salario_base  # Porque trabajó todos los días del mes
-
-        # Cálculo de las prestaciones sociales
-        vacaciones = salario_proporcional * dias_trabajados / 720
-
-        # Cálculo del resultado esperado total
-        resultado_esperado = salario_proporcional +  vacaciones
-        resultado = CalcularLiquidacion(salario_base, dias_trabajados)
-        self.assertEqual(round(resultado, 2), round(resultado_esperado, 2))
-
-    def testLiquidacion2(self):
-        salario_base = 1200000
-        dias_trabajados = 30
-        auxilio_transporte = 106454
-        salario_proporcional = salario_base * dias_trabajados / 30
-        vacaciones = salario_proporcional * dias_trabajados / 720
-        resultado_esperado = salario_proporcional + auxilio_transporte + vacaciones
+    # Pruebas Normales
+    def test_liquidacion_normal_1(self):
+        resultado = CalcularLiquidacion(salario= 3000000, semanas_trabajadas=4, 
+                                        auxilio_transporte=162000, tiempo_festivo_lab=10, 
+                                        Horas_Extras_Diu=5, Horas_Extras_Noc=3, Horas_Extras_Fes=2, 
+                                        dias_incapacidad=5, porcentaje_incapacidad=0.66)
+        print(f"Resultado de la liquidación: {resultado} COP")
+        self.assertEqual(resultado, 2789000.0)  # Ejemplo de resultado esperado
         
-        resultado = CalcularLiquidacion(salario_base, dias_trabajados, auxilio_transporte)
-        self.assertEqual(round(resultado, 2), round(resultado_esperado, 2))
 
-    def testLiquidacion3(self):
-        salario_base = 900000
-        dias_trabajados = 15
-        
-        # Cálculo esperado manual que incluya todos los componentes
-        salario_proporcional = (salario_base / 30) * dias_trabajados
-        vacaciones = salario_proporcional * dias_trabajados / 720
-        resultado_esperado = salario_proporcional +  vacaciones
-        
-        resultado = CalcularLiquidacion(salario_base, dias_trabajados)
-        
-        self.assertEqual(round(resultado, 2), round(resultado_esperado, 2))
+    def test_liquidacion_normal_2(self):
+        resultado = CalcularLiquidacion(salario=2000000, semanas_trabajadas=4, 
+                                        auxilio_transporte=162000, tiempo_festivo_lab=5, 
+                                        Horas_Extras_Diu=2, Horas_Extras_Noc=1, Horas_Extras_Fes=1, 
+                                        dias_incapacidad=3, porcentaje_incapacidad=0.66)
+        self.assertEqual(resultado, 1914773.33)
 
-    def testLiquidacion4(self):
-        with self.assertRaises(Exception):
-            CalcularLiquidacion('mil', 30)
+    def test_liquidacion_normal_3(self):
+        resultado = CalcularLiquidacion(salario=2600000, semanas_trabajadas=4, 
+                                        auxilio_transporte=0, tiempo_festivo_lab=8, 
+                                        Horas_Extras_Diu=4, Horas_Extras_Noc=2, 
+                                        Horas_Extras_Fes=1, 
+                                        dias_incapacidad=0, porcentaje_incapacidad=0.66)
+        self.assertEqual(resultado, 2625756.67)
 
-    def testLiquidacion5(self):
-        salario_base = 1000000
-        dias_trabajados = 370
-        with self.assertRaises(Exception):
-            CalcularLiquidacion(salario_base, dias_trabajados)
+    def test_liquidacion_normal_4(self):
+        resultado = CalcularLiquidacion(salario=1800000, semanas_trabajadas=4, 
+                                        auxilio_transporte=162000, tiempo_festivo_lab=0, 
+                                        Horas_Extras_Diu=0, Horas_Extras_Noc=0, Horas_Extras_Fes=0, 
+                                        dias_incapacidad=0, porcentaje_incapacidad=0.66)
+        self.assertEqual(resultado, 1694640.0)
+
+    def test_liquidacion_normal_5(self):
+        resultado = CalcularLiquidacion(salario=2500000, semanas_trabajadas=4, 
+                                        auxilio_transporte=162000, tiempo_festivo_lab=12, 
+                                        Horas_Extras_Diu=6, Horas_Extras_Noc=3, Horas_Extras_Fes=2, 
+                                        dias_incapacidad=4, porcentaje_incapacidad=0.66)
+        self.assertEqual(resultado, 2546477.5)
+
+    def test_liquidacion_normal_6(self):
+        resultado = CalcularLiquidacion(salario=3500000, semanas_trabajadas=4, 
+                                        auxilio_transporte=0, tiempo_festivo_lab=15, 
+                                        Horas_Extras_Diu=7, Horas_Extras_Noc=4, Horas_Extras_Fes=3, 
+                                        dias_incapacidad=0, porcentaje_incapacidad=0.66)
+        self.assertEqual(resultado, 3649333.33)
+
+    #Pruebas Extraordinarias
+    def test_liquidacion_extrordinaria_1(self):
+        resultado = CalcularLiquidacion(salario=4300000, semanas_trabajadas=4, 
+                                        auxilio_transporte=0, tiempo_festivo_lab=0, 
+                                        Horas_Extras_Diu=0, Horas_Extras_Noc=0, Horas_Extras_Fes=0, 
+                                        dias_incapacidad=0, porcentaje_incapacidad=0.66)
+        self.assertEqual(resultado, 3652133.33)  # Salario mayor a 4 SMLMV
+
+    def test_liquidacion_extrordinaria_2(self):
+        resultado = CalcularLiquidacion(salario=1200000, semanas_trabajadas=52, 
+                                        auxilio_transporte=140606, tiempo_festivo_lab=0, 
+                                        Horas_Extras_Diu=0, Horas_Extras_Noc=0, Horas_Extras_Fes=0, 
+                                        dias_incapacidad=0, porcentaje_incapacidad=0.66)
+        self.assertEqual(resultado, 13544240.0)  # Año completo de trabajo
+
+    def test_liquidacion_extrordinaria_3(self):
+        resultado = CalcularLiquidacion(salario=900000, semanas_trabajadas=2, 
+                                        auxilio_transporte=140606, tiempo_festivo_lab=0, 
+                                        Horas_Extras_Diu=0, Horas_Extras_Noc=0, Horas_Extras_Fes=0, 
+                                        dias_incapacidad=0, porcentaje_incapacidad=0.66)
+        self.assertEqual(resultado, 535440.0)  # Salario bajo
+
+    def test_liquidacion_extrordinaria_4(self):
+        resultado = CalcularLiquidacion(salario=5000000, semanas_trabajadas=4, 
+                                        auxilio_transporte=0, tiempo_festivo_lab=40, 
+                                        Horas_Extras_Diu=20, Horas_Extras_Noc=10, Horas_Extras_Fes=5, 
+                                        dias_incapacidad=0, porcentaje_incapacidad=0.66)
+        self.assertEqual(resultado, 6208125.0)  # Muchas horas extras
+
+    def test_liquidacion_extrordinaria_5(self):
+        resultado = CalcularLiquidacion(salario=2600000, semanas_trabajadas=1, 
+                                        auxilio_transporte=0, tiempo_festivo_lab=1, 
+                                        Horas_Extras_Diu=1, Horas_Extras_Noc=1, Horas_Extras_Fes=1, 
+                                        dias_incapacidad=1, porcentaje_incapacidad=0.66)
+        self.assertEqual(resultado, 745588.33)  # Trabajó solo una semana
+
+    def test_liquidacion_extrordinaria_6(self):
+        resultado = CalcularLiquidacion(salario=4200000, semanas_trabajadas=2, 
+                                        auxilio_transporte=0, tiempo_festivo_lab=0, 
+                                        Horas_Extras_Diu=0, Horas_Extras_Noc=0, Horas_Extras_Fes=0, 
+                                        dias_incapacidad=15, porcentaje_incapacidad=0.66)
+        self.assertEqual(resultado, 1084300.0)  # Muchos días de incapacidad
+
+    # Casos de Error (Excepciones)
+    def test_liquidacion_error_salario_negativo(self):
+        with self.assertRaises(ValueError):
+            CalcularLiquidacion(salario=-3000000, semanas_trabajadas=4, 
+                                auxilio_transporte=62000, tiempo_festivo_lab=10, 
+                                Horas_Extras_Diu=5, Horas_Extras_Noc=3, Horas_Extras_Fes=2, 
+                                dias_incapacidad=5, porcentaje_incapacidad=0.66)
+
+    def test_liquidacion_error_semanas_negativas(self):
+        with self.assertRaises(ValueError):
+            CalcularLiquidacion(salario=3000000, semanas_trabajadas=-4, 
+                                auxilio_transporte=162000, tiempo_festivo_lab=10, 
+                                Horas_Extras_Diu=5, Horas_Extras_Noc=3, Horas_Extras_Fes=2, 
+                                dias_incapacidad=5, porcentaje_incapacidad=0.66)
+
+    def test_liquidacion_error_tiempo_festivo_negativo(self):
+        with self.assertRaises(ValueError):
+            CalcularLiquidacion(salario=3000000, semanas_trabajadas=4, 
+                                auxilio_transporte=62000, tiempo_festivo_lab=-10, 
+                                Horas_Extras_Diu=5, Horas_Extras_Noc=3, Horas_Extras_Fes=2, 
+                                dias_incapacidad=5, porcentaje_incapacidad=0.66)
+
+    def test_liquidacion_error_horas_extras_negativas(self):
+        with self.assertRaises(ValueError):
+            CalcularLiquidacion(salario=3000000, semanas_trabajadas=4, 
+                                auxilio_transporte=62000, tiempo_festivo_lab=10, 
+                                Horas_Extras_Diu=-5, Horas_Extras_Noc=3, Horas_Extras_Fes=2, 
+                                dias_incapacidad=5, porcentaje_incapacidad=0.66)
+
+    def test_liquidacion_error_dias_incapacidad_negativos(self):
+        with self.assertRaises(ValueError):
+            CalcularLiquidacion(salario=3000000, semanas_trabajadas=4, 
+                                auxilio_transporte=62000, tiempo_festivo_lab=10, 
+                                Horas_Extras_Diu=5, Horas_Extras_Noc=3, Horas_Extras_Fes=2, 
+                                dias_incapacidad=-5, porcentaje_incapacidad=0.66)
+
+    def test_liquidacion_error_porcentaje_incapacidad_negativo(self):
+        with self.assertRaises(ValueError):
+            CalcularLiquidacion(salario=3000000, semanas_trabajadas=4, 
+                                auxilio_transporte=62000,tiempo_festivo_lab=10, 
+                                Horas_Extras_Diu=5, Horas_Extras_Noc=3, Horas_Extras_Fes=2, 
+                                dias_incapacidad=5, porcentaje_incapacidad=-0.66)
+
+    def test_liquidacion_error_salario_no_numerico(self):
+        with self.assertRaises(ValueError):
+            CalcularLiquidacion(salario="tres millones", semanas_trabajadas=4, 
+                                auxilio_transporte=62000, tiempo_festivo_lab=10, 
+                                Horas_Extras_Diu=5, Horas_Extras_Noc=3, Horas_Extras_Fes=2, 
+                                dias_incapacidad=5, porcentaje_incapacidad=0.66)
+
+    def test_liquidacion_error_horas_extras_no_numerico(self):
+        with self.assertRaises(ValueError):
+            CalcularLiquidacion(salario=3000000, semanas_trabajadas=4, auxilio_transporte=62000, tiempo_festivo_lab=10, Horas_Extras_Diu="cinco", Horas_Extras_Noc=3, Horas_Extras_Fes=2, dias_incapacidad=5, porcentaje_incapacidad=0.66)
+
+
 
 
 # Este fragmento de codigo permite ejecutar la prueb individualmente
 # Va fijo en todas las pruebas
 if __name__ == '__main__':
     unittest.main()
+
