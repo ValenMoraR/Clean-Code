@@ -1,8 +1,10 @@
 1) ¿Quién hizo esto?
-Lista de autores (no ponga email, telefonos, nada de informacion privada)
+Steven David Oviedo Herrera
+Valentina Morales Restrepo 
 
-2) ¿Qué es y para qué es?
-Describir el propósito del proyecto
+2) ¿Qué es y para qué es? #Describir el propósito del proyecto
+Es una aplicación que calcula el total a pagar de una empresa a un empleado.
+Este pago corresponde a la diferencia entre los valores devengados y las deducciones de ley que le aplican.
 
 3) ¿Cómo lo hago funcionar?
 Prerrequisitos: que se debe hacer o tener antes de poder correr este proyecto
@@ -11,6 +13,10 @@ Ejecución: como hacemos correr el programa, POR FUERA DEL ENTORNO DE DESARROLLO
 4) ¿Cómo está hecho?
 Describir la arquitectura del proyecto, bibliotecas usadas, dependencias de otros proyectos
 Y la organización de los módulos (que hay en cada carpeta)
+Este proyecto usa modulo como:
+re: Este módulo proporciona operaciones de coincidencia de expresiones regulares 
+
+
 -----------------------------------------------------------------------------------------------------
 
 Estructura sugerida
