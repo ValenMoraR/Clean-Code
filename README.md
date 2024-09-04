@@ -8,7 +8,7 @@
 
 ## ¿Qué es y para qué es?
 
-Este proyecto es una aplicación que calcula el total a pagar de una empresa a un empleado. Este pago corresponde a la diferencia entre los valores devengados y las deducciones de ley que aplican al salario del trabajador.
+Este proyecto es una aplicación que calcula el total a pagar de una empresa a un empleado (pago de nomina). Este pago corresponde a la diferencia entre los valores devengados y las deducciones de ley que aplican al salario del trabajador.
 
 ## ¿Cómo lo hago funcionar?
 ### Prerrequisito
