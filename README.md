@@ -11,10 +11,10 @@
 Este proyecto es una aplicación que calcula el total a pagar de una empresa a un empleado. Este pago corresponde a la diferencia entre los valores devengados y las deducciones de ley que aplican al salario del trabajador.
 
 ## ¿Cómo lo hago funcionar?
-## Prerrequisito
+### Prerrequisito
 Asegurese de eten4r Python instalado en su sistema. No hay dependencias externas para correr el proyecto.4
 
-## Ejecución
+### Ejecución
 Para correr el programa por fuera del entorno de desarrollo :
 1. Navegar a la carpeta: una vez que hayas clonado el archivo, abre el símbolo del sistema (cmd) y navega a la carpeta donde guardaste el archivo, por ejemplo:
    ```bash
@@ -26,22 +26,17 @@ Para correr el programa por fuera del entorno de desarrollo :
    ```
 
 ## ¿Cómo está hecho?
-## Arquitectura del proyecto
+### Arquitectura del proyecto
 El proyecto está organizado en dos carpetas principales:
 
-- **src**
-  ```bash
-  Esta capeta contiene el código fuente de la aplicación y la lógica de la interacción con el usuario.
-  ```
-  En esta tambien esta la carpeta
-1. **console**: Contiene el script principal `Console.py` para la interacción del usuario.
-2. **logic**: Contiene la lógica para el cálculo de la Nomina (`Liquida_nomina1.py`).
-  
-- **Test**:
-  ```bash
-  Esta carpeta contiene pruebas unitarias para validar la funcionalidad del código.
-  ```
-  1. **Liqui_test**: Es el archivo que contiene las pruebas
+- **src**: Contiene el código fuente de la aplicación.
+   - **console**: Contiene el script principal `Console.py` para la interacción del usuario.
+   - **logic**: Contiene la lógica para el cálculo de la hipoteca inversa (`rLiquida_nomina1.py`).
+- **tests**: Contiene pruebas unitarias para validar la funcionalidad del código.
+
+### Organización del módulo
+- `src/console/main.py`: archivo principal para la interacción del usuario. Recopila las entradas del usuario y muestra los resultados.
+- `src/logic/reverse_mortgage.py`: contiene las funciones lógicas para el cálculo de la hipoteca inversa, incluida la validación de las entradas y el cálculo del pago.
   
    
 
