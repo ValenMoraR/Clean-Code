@@ -35,9 +35,21 @@ El proyecto está organizado en dos carpetas principales:
 - **tests**: Contiene pruebas unitarias para validar la funcionalidad del código.
 
 ### Organización del módulo
-- `src/console/main.py`: archivo principal para la interacción del usuario. Recopila las entradas del usuario y muestra los resultados.
-- `src/logic/reverse_mortgage.py`: contiene las funciones lógicas para el cálculo de la hipoteca inversa, incluida la validación de las entradas y el cálculo del pago.
-  
+- `src\Console\Console.py`: archivo principal para la interacción del usuario. Recopila las entradas del usuario y muestra los resultados.
+- `src\LiquidacionNomina\Liquida_nomina1.py`: contiene las funciones lógicas para el cálculo de la nomina, incluida la validación de las entradas y el cálculo del pago.
+
+### Dependencias
+- `unittest`: biblioteca estándar de Python para pruebas unitarias.
+
+## Uso
+Para ejecutar las pruebas unitarias desde la carpeta `test`, utilice el siguiente comando:
+
+```bash
+python Test/Liqui_test.py
+
+Para ejecutar el archivo principal:
+python src\Console\Console.py
+```
    
 
 
