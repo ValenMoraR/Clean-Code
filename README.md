@@ -19,7 +19,7 @@ De resto no hay otro prerrequisito.
 Para correr el programa por fuera del entorno de desarrollo :
 1. Navegar a la carpeta: una vez que hayas clonado el archivo, abre el cmd y navega a la carpeta donde guardaste el archivo, por ejemplo:
    ```bash
-   cd C:\Users\Usuario\OneDrive\Documentos\U\Sexto Semestre\Código limpio\Clean-Code-1\src\Console
+   cd C:\Users\Usuario\OneDrive\Documentos\U\Sexto Semestre\Código limpio\Clean-Code-1
    ``` 
 2. Ejecuta el script principal: <br>
    ```bash
