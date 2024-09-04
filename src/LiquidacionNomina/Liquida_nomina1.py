@@ -1,148 +1,147 @@
 import re
-# Exepcion personalizada que se usa en un caso de error particular
-class ValorNegativo( Exception ): 
+
+# Custom exceptions for specific error cases
+class NegativeValue(Exception): 
     pass
-class ValorInvalido( Exception ): 
+class InvalidValue(Exception): 
     pass
-class SemanaCero( Exception ): 
+class ZeroWeeksWorked(Exception): 
     pass
-class MasDe8HorasFestivoLaboradas( Exception ): 
+class MoreThan8HoursWorkedOnHoliday(Exception): 
     pass
-class ValorNoEntero ( Exception):
+class NotAnIntegerValue(Exception):
     pass
-class ComaSeparador (Exception):
+class CommaSeparator(Exception):
     pass
 
-def CalcularLiquidacion(salario_mensual, semanas_trabajadas,
-                        tiempo_festivo_laborado=0, horas_extras_diurnas=0,
-                        horas_extras_nocturnas=0, horas_extras_festivos=0,
-                        dias_licencia=0 ,dias_incapacidad=0):
+def CalculatePayrollSettlement(monthly_salary, weeks_worked,
+                               time_worked_on_holidays=0, overtime_day_hours=0,
+                               overtime_night_hours=0, overtime_holiday_hours=0,
+                               leave_days=0, sick_days=0):
     """    
-    Calcula la liquidación de nómina para empleados en Colombia.
+    Calculates the payroll settlement for employees in Colombia.
     ----------------------------------------------------
-    salario: Salario base mensual del empleado.
-    semanas_trabajadas: Semanas laboradas durante el período.
-    auxilio_transporte: Auxilio de transporte mensual (si aplica).Solo si SALARIO <= 2 SMLMV (2.600.000)
-    tiempo_festivo_lab: Tiempo trabajado en festivos (que no son extras).
-    Horas_Extras_Diu: Horas extras diurnas.
-    Horas_Extras_Noc: Horas extras nocturnas.
-    Horas_Extras_Fes: Horas extras en festivos.
-    deduccion_salud: Aporte del empleado a salud (4% del salario)
-    deduccion_pension: Aporte del empleado a pensión (4% del salario)
-    deduccion_fondo_solidario: Aporte al fondo de solidaridad (solo si salario > 4 SMLMV)
-    deduccion_incapacidades: Valor por incapacidades descontadas del salario
-    dias_incapacidad: Días de incapacidad.
-    porcentaje_incapacidad: Porcentaje del salario que se paga durante la incapacidad.
-    dias_licencia: Dias de licencia remunerada que puede variar entre:
-        - 5 días hábiles para licencias por luto y matrimonio.
-        - 14 días calendario para la licencia de paternidad.
-        - 126 días para la licencia de maternidad o adopción
-    
+    monthly_salary: Base monthly salary of the employee.
+    weeks_worked: Number of weeks worked during the period.
+    transport_allowance: Monthly transport allowance (if applicable). Only if salary <= 2 SMLMV (2,600,000).
+    time_worked_on_holidays: Time worked on holidays (not overtime).
+    overtime_day_hours: Daytime overtime hours.
+    overtime_night_hours: Nighttime overtime hours.
+    overtime_holiday_hours: Overtime hours on holidays.
+    health_contribution: Employee contribution to health (4% of the salary).
+    pension_contribution: Employee contribution to pension (4% of the salary).
+    solidarity_fund_contribution: Contribution to the solidarity fund (only if salary > 4 SMLMV).
+    disability_deductions: Value for disabilities deducted from salary.
+    sick_days: Number of days on sick leave.
+    disability_percentage: Percentage of salary paid during disability leave.
+    leave_days: Number of paid leave days, which may vary among:
+        - 5 business days for mourning and marriage leave.
+        - 14 calendar days for paternity leave.
+        - 126 days for maternity or adoption leave.
     """
-    # Lista de variables y nombres descriptivos
+    # List of variables and descriptive names
     variables = [
-        (salario_mensual, 'Salario mensual', True),
-        (semanas_trabajadas, 'Semanas trabajadas', False),
-        (tiempo_festivo_laborado, 'Tiempo festivo trabajado', False),
-        (horas_extras_diurnas, 'Horas extras diurnas', False),
-        (horas_extras_nocturnas, 'Horas extras nocturnas', False),
-        (horas_extras_festivos, 'Horas extras en festivos', False),
-        (dias_incapacidad, 'Días de incapacidad', True),
-        (dias_licencia, 'Días de licencia', True)
+        (monthly_salary, 'Monthly salary', True),
+        (weeks_worked, 'Weeks worked', False),
+        (time_worked_on_holidays, 'Time worked on holidays', False),
+        (overtime_day_hours, 'Overtime day hours', False),
+        (overtime_night_hours, 'Overtime night hours', False),
+        (overtime_holiday_hours, 'Overtime holiday hours', False),
+        (sick_days, 'Sick days', True),
+        (leave_days, 'Leave days', True)
     ]
 
-    variables_convertidas  = []
+    converted_variables = []
 
-    # Validar cada variable
-    for entrada, nombre_variable, entero in variables:
+    # Validate each variable
+    for entry, variable_name, should_be_integer in variables:
         try:
-            # Convertir la entrada a cadena para validar si contiene una coma como separador decimal
-            entrada_str = str(entrada)
-            # Verificar si la entrada contiene una coma como separador decimal
-            if ',' in entrada_str:
-                raise ComaSeparador(f"ERROR: Dato inválido en {nombre_variable}: Use un punto (.) como separador decimal, no una coma (,).")
+            # Convert the entry to string to check if it contains a comma as a decimal separator
+            entry_str = str(entry)
+            # Check if the entry contains a comma as a decimal separator
+            if ',' in entry_str:
+                raise CommaSeparator(f"ERROR: Invalid data in {variable_name}: Use a period (.) as a decimal separator, not a comma (,).")
 
-            # Convertir a número flotante para asegurar que es numérico
-            valor = float(entrada)
+            # Convert to float to ensure it is numeric
+            value = float(entry)
 
-            # Si debe ser entero, verificar que no tenga decimales
-            if entero and float(entrada) != int(float(entrada)):
-                raise ValorNoEntero(f"ERROR: Dato inválido en {nombre_variable}: Se esperaba un número entero.")
+            # If it should be an integer, check that it has no decimals
+            if should_be_integer and float(entry) != int(float(entry)):
+                raise NotAnIntegerValue(f"ERROR: Invalid data in {variable_name}: An integer value was expected.")
 
-
-            # Verificar si es negativo
-            if valor < 0:
-                raise ValorNegativo(f"ERROR: Dato inválido en {nombre_variable}: Los números no pueden ser negativos.")
+            # Check if it is negative
+            if value < 0:
+                raise NegativeValue(f"ERROR: Invalid data in {variable_name}: Numbers cannot be negative.")
             
-            # Convertir a entero si debe serlo
-            valor = int(valor) if entero else valor
+            # Convert to integer if it should be
+            value = int(value) if should_be_integer else value
             
-            # Agregar la variable convertida a la lista
-            variables_convertidas.append((valor, nombre_variable, entero))
+            # Add the converted variable to the list
+            converted_variables.append((value, variable_name, should_be_integer))
 
         except ValueError:
-            # Si la conversión a float también falla, es porque hay caracteres no numéricos
-            raise ValorInvalido(f"ERROR: Dato inválido en {nombre_variable}: Asegúrese de que sea un número numérico, no negativo y sin letras o caracteres especiales.")
+            # If conversion to float also fails, it means there are non-numeric characters
+            raise InvalidValue(f"ERROR: Invalid data in {variable_name}: Ensure it is a numeric value, not negative and without letters or special characters.")
 
-    # Desempaquetar las variables convertidas
-    salario_mensual = variables_convertidas[0][0]
-    semanas_trabajadas = variables_convertidas[1][0]
-    tiempo_festivo_laborado = variables_convertidas[2][0]
-    horas_extras_diurnas = variables_convertidas[3][0]
-    horas_extras_nocturnas = variables_convertidas[4][0]
-    horas_extras_festivos = variables_convertidas[5][0]
-    dias_incapacidad = variables_convertidas[6][0]
-    dias_licencia = variables_convertidas[7][0]
+    # Unpack the converted variables
+    monthly_salary = converted_variables[0][0]
+    weeks_worked = converted_variables[1][0]
+    time_worked_on_holidays = converted_variables[2][0]
+    overtime_day_hours = converted_variables[3][0]
+    overtime_night_hours = converted_variables[4][0]
+    overtime_holiday_hours = converted_variables[5][0]
+    sick_days = converted_variables[6][0]
+    leave_days = converted_variables[7][0]
 
-    TOTAL_DIAS_DEL_MES = 30
-    HORAS_DIARIAS_TRABAJADAS = 8
-    MAXIMO_SALARIO_CON_AUXILIO_TRANSPORTE = 2600000
-    TOTAL_DIAS_A_LA_SEMANA = 6
-    VALOR_POR_HORA_TRABAJADA_FESTIVO = 1.75
-    VALOR_POR_HORA_EXTRA_TRABAJADA_DIURNA = 1.25
-    VALOR_POR_HORA_EXTRA_TRABAJADA_NOCTURNA = 1.75
-    VALOR_POR_HORA_EXTRA_TRABAJADA_FESTIVO = 2
-    PORCENTAJE_A_RESTAR_POR_SALUD = 0.04
-    PORCENTAJE_A_RESTAR_POR_PENSION = 0.04
-    PORCENTAJE_A_RESTAR_POR_FONDO = 0.01
-    SALARIO_A_RESTAR_FONDO = 4000000
-    PORCENTAJE_A_RESTAR_POR_RETENCION = 0.05
-    SALARIO_A_RESTAR_RETENCION = 4300000
-    PORCENTAJE_A_RESTAR_POR_INCAPACIDAD = 0.333
+    TOTAL_DAYS_IN_MONTH = 30
+    DAILY_WORKING_HOURS = 8
+    MAXIMUM_SALARY_WITH_TRANSPORT_ALLOWANCE = 2600000
+    TOTAL_WORK_DAYS_PER_WEEK = 6
+    VALUE_PER_HOUR_WORKED_ON_HOLIDAY = 1.75
+    VALUE_PER_OVERTIME_DAY_HOUR = 1.25
+    VALUE_PER_OVERTIME_NIGHT_HOUR = 1.75
+    VALUE_PER_OVERTIME_HOLIDAY_HOUR = 2
+    PERCENTAGE_TO_DEDUCT_FOR_HEALTH = 0.04
+    PERCENTAGE_TO_DEDUCT_FOR_PENSION = 0.04
+    PERCENTAGE_TO_DEDUCT_FOR_SOLIDARITY_FUND = 0.01
+    SALARY_TO_DEDUCT_FOR_FUND = 4000000
+    PERCENTAGE_TO_DEDUCT_FOR_WITHHOLDING = 0.05
+    SALARY_TO_DEDUCT_FOR_WITHHOLDING = 4300000
+    PERCENTAGE_TO_DEDUCT_FOR_DISABILITY = 0.333
 
-    if semanas_trabajadas == 0:
-        raise SemanaCero("VALOR INVÁLIDO:Las semanas trabajadas deben ser un numero mayor o igual a 1.")
+    if weeks_worked == 0:
+        raise ZeroWeeksWorked("INVALID VALUE: Weeks worked must be a number greater than or equal to 1.")
     
-    if tiempo_festivo_laborado > HORAS_DIARIAS_TRABAJADAS:
-        raise MasDe8HorasFestivoLaboradas("VALOR INVÁLIDO: El timepo festivo laborado no piede ser mayor a 8 horas.")
+    if time_worked_on_holidays > DAILY_WORKING_HOURS:
+        raise MoreThan8HoursWorkedOnHoliday("INVALID VALUE: Time worked on holidays cannot be more than 8 hours.")
     
-    dias_trabajados = semanas_trabajadas *  TOTAL_DIAS_A_LA_SEMANA# Convertir semanas a días trabajados
+    days_worked = weeks_worked * TOTAL_WORK_DAYS_PER_WEEK  # Convert weeks to days worked
 
-    # Cálculos iniciales
-    auxilio_transporte = 162000 if salario_mensual <= MAXIMO_SALARIO_CON_AUXILIO_TRANSPORTE else 0
-    salario_diario = salario_mensual / TOTAL_DIAS_DEL_MES
+    # Initial calculations
+    transport_allowance = 162000 if monthly_salary <= MAXIMUM_SALARY_WITH_TRANSPORT_ALLOWANCE else 0
+    daily_salary = monthly_salary / TOTAL_DAYS_IN_MONTH
 
-    salario_hora = salario_diario / HORAS_DIARIAS_TRABAJADAS
-    # Cálculo de pagos adicionales
-    ganacias_por_festivo = tiempo_festivo_laborado * salario_hora * VALOR_POR_HORA_TRABAJADA_FESTIVO 
-    ganancias_por_extras_diurnas = horas_extras_diurnas * salario_hora * VALOR_POR_HORA_EXTRA_TRABAJADA_DIURNA
-    ganancias_por_extras_nocturnas = horas_extras_nocturnas * salario_hora * VALOR_POR_HORA_EXTRA_TRABAJADA_NOCTURNA
-    ganacias_por_extras_festivas = horas_extras_festivos * salario_hora * VALOR_POR_HORA_EXTRA_TRABAJADA_FESTIVO
+    hourly_salary = daily_salary / DAILY_WORKING_HOURS
+    # Calculation of additional payments
+    earnings_for_holidays = time_worked_on_holidays * hourly_salary * VALUE_PER_HOUR_WORKED_ON_HOLIDAY 
+    earnings_for_overtime_day = overtime_day_hours * hourly_salary * VALUE_PER_OVERTIME_DAY_HOUR
+    earnings_for_overtime_night = overtime_night_hours * hourly_salary * VALUE_PER_OVERTIME_NIGHT_HOUR
+    earnings_for_overtime_holidays = overtime_holiday_hours * hourly_salary * VALUE_PER_OVERTIME_HOLIDAY_HOUR
 
-    # Ingresos Totales
-    total_ingresos = (salario_diario * dias_trabajados) + auxilio_transporte + ganacias_por_festivo + \
-                  ganancias_por_extras_diurnas + ganancias_por_extras_nocturnas + ganacias_por_extras_festivas
+    # Total income
+    total_income = (daily_salary * days_worked) + transport_allowance + earnings_for_holidays + \
+                   earnings_for_overtime_day + earnings_for_overtime_night + earnings_for_overtime_holidays
           
-    # Deducciones
-    salud = total_ingresos * PORCENTAJE_A_RESTAR_POR_SALUD
-    pension = total_ingresos * PORCENTAJE_A_RESTAR_POR_PENSION
-    fondo_solidario = total_ingresos * PORCENTAJE_A_RESTAR_POR_FONDO if salario_mensual > SALARIO_A_RESTAR_FONDO else 0
-    pago_por_licencia = dias_licencia * salario_diario
-    retencion_fuente = total_ingresos *PORCENTAJE_A_RESTAR_POR_RETENCION if salario_mensual > SALARIO_A_RESTAR_RETENCION else 0
-    deduccion_incapacidad = dias_incapacidad * salario_diario * PORCENTAJE_A_RESTAR_POR_INCAPACIDAD
+    # Deductions
+    health_deduction = total_income * PERCENTAGE_TO_DEDUCT_FOR_HEALTH
+    pension_deduction = total_income * PERCENTAGE_TO_DEDUCT_FOR_PENSION
+    solidarity_fund_deduction = total_income * PERCENTAGE_TO_DEDUCT_FOR_SOLIDARITY_FUND if monthly_salary > SALARY_TO_DEDUCT_FOR_FUND else 0
+    leave_payment = leave_days * daily_salary
+    withholding_tax = total_income * PERCENTAGE_TO_DEDUCT_FOR_WITHHOLDING if monthly_salary > SALARY_TO_DEDUCT_FOR_WITHHOLDING else 0
+    disability_deduction = sick_days * daily_salary * PERCENTAGE_TO_DEDUCT_FOR_DISABILITY
 
-    # Valor total a recibir
-    liquidacion_total = total_ingresos - (salud + pension + fondo_solidario + deduccion_incapacidad + 
-                                       pago_por_licencia + retencion_fuente)
+    # Total amount to receive
+    total_settlement = total_income - (health_deduction + pension_deduction + solidarity_fund_deduction + disability_deduction + 
+                                       leave_payment + withholding_tax)
     
-    return (round(liquidacion_total, 2))
+    return round(total_settlement, 2)
