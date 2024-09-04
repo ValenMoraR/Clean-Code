@@ -23,7 +23,7 @@ Para correr el programa por fuera del entorno de desarrollo :
    ``` 
 2. Ejecuta el script principal: <br>
    ```bash
-   src\Console\Console.py
+   python src\Console\Console.py
    ```
 
 ## ¿Cómo está hecho?
