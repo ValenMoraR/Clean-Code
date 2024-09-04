@@ -14,7 +14,7 @@ class NotAnIntegerValue(Exception):
 class CommaSeparator(Exception):
     pass
 
-def CalculatePayrollSettlement(monthly_salary, weeks_worked,
+def CalcularLiquidacion(monthly_salary, weeks_worked,
                                time_worked_on_holidays=0, overtime_day_hours=0,
                                overtime_night_hours=0, overtime_holiday_hours=0,
                                leave_days=0, sick_days=0):
