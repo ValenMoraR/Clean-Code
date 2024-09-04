@@ -19,7 +19,7 @@ leave_days = validate_empty(input("Enter the number of days you had on leave dur
 sick_days = validate_empty(input("If you had any sick leave during the working period, enter the number of days (ONLY IF APPLICABLE):"))
 
 try:
-    result = Liquida_nomina1.CalcularLiquidacion(
+    result = Liquida_nomina1.CalculatePayrollSettlement(
         monthly_salary, weeks_worked, holiday_hours_worked,
         overtime_day_hours, overtime_night_hours, holiday_overtime_hours, leave_days, sick_days
     )
