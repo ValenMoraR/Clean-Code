@@ -20,18 +20,23 @@ def CalcularLiquidacion(salario_mensual, semanas_trabajadas,
     """    
     Calcula la liquidación de nómina para empleados en Colombia.
     ----------------------------------------------------
-    salario_mensual: Salario base mensual del empleado.
+    salario: Salario base mensual del empleado.
     semanas_trabajadas: Semanas laboradas durante el período.
-    auxilio_transporte: Auxilio de transporte mensual (si aplica).Solo si salario_mensual <= 2 SMLMV (2.600.000)
+    auxilio_transporte: Auxilio de transporte mensual (si aplica).Solo si SALARIO <= 2 SMLMV (2.600.000)
     tiempo_festivo_lab: Tiempo trabajado en festivos (que no son extras).
     Horas_Extras_Diu: Horas extras diurnas.
     Horas_Extras_Noc: Horas extras nocturnas.
     Horas_Extras_Fes: Horas extras en festivos.
-    deduccion_salud: Aporte del empleado a salud (4%)
-    deduccion_pension: Aporte del empleado a pensión (4%)
-    deduccion_fondo_solidario: Aporte al fondo de solidaridad (solo si salario_mensual > 4 SMLMV)
+    deduccion_salud: Aporte del empleado a salud (4% del salario)
+    deduccion_pension: Aporte del empleado a pensión (4% del salario)
+    deduccion_fondo_solidario: Aporte al fondo de solidaridad (solo si salario > 4 SMLMV)
+    deduccion_incapacidades: Valor por incapacidades descontadas del salario
     dias_incapacidad: Días de incapacidad.
-    dias_licencia: Dias de licencia remunerada
+    porcentaje_incapacidad: Porcentaje del salario que se paga durante la incapacidad.
+    dias_licencia: Dias de licencia remunerada que puede variar entre:
+        - 5 días hábiles para licencias por luto y matrimonio.
+        - 14 días calendario para la licencia de paternidad.
+        - 126 días para la licencia de maternidad o adopción
     
     """
     # Lista de variables y nombres descriptivos
@@ -51,8 +56,10 @@ def CalcularLiquidacion(salario_mensual, semanas_trabajadas,
     # Validar cada variable
     for entrada, nombre_variable, entero in variables:
         try:
+            # Convertir la entrada a cadena para validar si contiene una coma como separador decimal
+            entrada_str = str(entrada)
             # Verificar si la entrada contiene una coma como separador decimal
-            if ',' in entrada:
+            if ',' in entrada_str:
                 raise ComaSeparador(f"ERROR: Dato inválido en {nombre_variable}: Use un punto (.) como separador decimal, no una coma (,).")
 
             # Convertir a número flotante para asegurar que es numérico
@@ -86,8 +93,7 @@ def CalcularLiquidacion(salario_mensual, semanas_trabajadas,
     horas_extras_festivos = variables_convertidas[5][0]
     dias_incapacidad = variables_convertidas[6][0]
     dias_licencia = variables_convertidas[7][0]
-                          
-    # Declaracion de constantes
+
     TOTAL_DIAS_DEL_MES = 30
     HORAS_DIARIAS_TRABAJADAS = 8
     MAXIMO_SALARIO_CON_AUXILIO_TRANSPORTE = 2600000
