@@ -8,21 +8,22 @@
 
 ## ¿Qué es y para qué es?
 
-Este proyecto es una aplicación que calcula el total a pagar de una empresa a un empleado (pago de nomina). Este pago corresponde a la diferencia entre los valores devengados y las deducciones de ley que aplican al salario del trabajador.
+Este proyecto es una aplicación que calcula el total a pagar de una empresa a un empleado (pago de nómina). Este pago corresponde a la diferencia entre los valores devengados y las deducciones de ley que aplican al salario del trabajador.
 
 ## ¿Cómo lo hago funcionar?
 ### Prerrequisito
-Asegurese de eten4r Python instalado en su sistema. No hay dependencias externas para correr el proyecto.4
+Asegurese de tener ``Python`` instalado en su sistema. Ademas de tambien añadir `unittest` que es el encargado de correr las pruebas unitarias.<br>
+De resto no hay otro prerrequisito.
 
 ### Ejecución
 Para correr el programa por fuera del entorno de desarrollo :
-1. Navegar a la carpeta: una vez que hayas clonado el archivo, abre el símbolo del sistema (cmd) y navega a la carpeta donde guardaste el archivo, por ejemplo:
+1. Navegar a la carpeta: una vez que hayas clonado el archivo, abre el cmd y navega a la carpeta donde guardaste el archivo, por ejemplo:
    ```bash
    cd C:\Users\Usuario\OneDrive\Documentos\U\Sexto Semestre\Código limpio\Clean-Code-1\src\Console
    ``` 
 2. Ejecuta el script principal: <br>
    ```bash
-   src\Console
+   src\Console\Console.py
    ```
 
 ## ¿Cómo está hecho?
@@ -30,9 +31,9 @@ Para correr el programa por fuera del entorno de desarrollo :
 El proyecto está organizado en dos carpetas principales:
 
 - **src**: Contiene el código fuente de la aplicación.
-   - **console**: Contiene el script principal `Console.py` para la interacción del usuario.
-   - **logic**: Contiene la lógica para el cálculo de la hipoteca inversa (`rLiquida_nomina1.py`).
-- **tests**: Contiene pruebas unitarias para validar la funcionalidad del código.
+   - **Console**: Contiene el script principal `Console.py` para la interacción del usuario.
+   - **LiquidacionNomina**: Contiene la lógica para el cálculo de la nómina (`Liquida_nomina1.py`).
+- **Test**: Contiene pruebas unitarias para validar la funcionalidad del código.
 
 ### Organización del módulo
 - `src\Console\Console.py`: archivo principal para la interacción del usuario. Recopila las entradas del usuario y muestra los resultados.
