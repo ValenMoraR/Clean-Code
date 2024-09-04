@@ -1,5 +1,5 @@
 # Calculadora de Nómina
-***
+
 ## ¿Quién hizo esto?
 
 **Autores**:
