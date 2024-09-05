@@ -2,7 +2,7 @@
 Steven David Oviedo Herrera
 Valentina Morales Restrepo 
 
-2) ¿Qué es y para qué es? #Describir el propósito del proyecto
+2) ¿Qué es y para qué es? #Describir el propósito del proyecto 
 Es una aplicación que calcula el total a pagar de una empresa a un empleado.
 Este pago corresponde a la diferencia entre los valores devengados y las deducciones de ley que le aplican.
 
@@ -15,6 +15,13 @@ Describir la arquitectura del proyecto, bibliotecas usadas, dependencias de otro
 Y la organización de los módulos (que hay en cada carpeta)
 Este proyecto usa modulo como:
 re: Este módulo proporciona operaciones de coincidencia de expresiones regulares 
+
+Carpetas y archivos:
+1) scr: En esta carpeta podemos encontrar otras dos.
+    a. Console: Esta carpeta contiene el archivo con el ejecutable de la consola
+    b. LiquidaciónNomina: Esa carpeta contiene la lógica base del proyecto
+
+2) Test: En esta carpeta se encuetra el archivo que se encarga de correr las pruebas de error, extraordinarias y excepciones que tiene el código. 
 
 
 -----------------------------------------------------------------------------------------------------

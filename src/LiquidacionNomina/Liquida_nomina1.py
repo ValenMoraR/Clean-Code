@@ -1,11 +1,24 @@
 import re
+# Exepcion personalizada que se usa en un caso de error particular
+class ValorNegativo( Exception ): 
+    pass
+class ValorInvalido( Exception ): 
+    pass
+class SemanaCero( Exception ): 
+    pass
+class MasDe8HorasFestivoLaboradas( Exception ): 
+    pass
+class ValorNoEntero ( Exception):
+    pass
+class ComaSeparador (Exception):
+    pass
 
-def CalcularLiquidacion(salario, semanas_trabajadas,
-                        tiempo_festivo_lab=0, Horas_Extras_Diu=0,
-                        Horas_Extras_Noc=0, Horas_Extras_Fes=0,
+def CalcularLiquidacion(salario_mensual, semanas_trabajadas,
+                        tiempo_festivo_laborado=0, horas_extras_diurnas=0,
+                        horas_extras_nocturnas=0, horas_extras_festivos=0,
                         dias_licencia=0 ,dias_incapacidad=0):
     """    
-    Calcula la liquidación de nómina básica en Colombia.
+    Calcula la liquidación de nómina para empleados en Colombia.
     ----------------------------------------------------
     salario: Salario base mensual del empleado.
     semanas_trabajadas: Semanas laboradas durante el período.
@@ -26,94 +39,110 @@ def CalcularLiquidacion(salario, semanas_trabajadas,
         - 126 días para la licencia de maternidad o adopción
     
     """
+    # Lista de variables y nombres descriptivos
+    variables = [
+        (salario_mensual, 'Salario mensual', True),
+        (semanas_trabajadas, 'Semanas trabajadas', False),
+        (tiempo_festivo_laborado, 'Tiempo festivo trabajado', False),
+        (horas_extras_diurnas, 'Horas extras diurnas', False),
+        (horas_extras_nocturnas, 'Horas extras nocturnas', False),
+        (horas_extras_festivos, 'Horas extras en festivos', False),
+        (dias_incapacidad, 'Días de incapacidad', True),
+        (dias_licencia, 'Días de licencia', True)
+    ]
 
-    # Asegúrate de que todas las entradas sean cadenas antes de la validación
-    variables = [str(salario), str(semanas_trabajadas), str(tiempo_festivo_lab),
-                 str(Horas_Extras_Diu), str(Horas_Extras_Noc), 
-                 str(Horas_Extras_Fes), str(dias_incapacidad),str(dias_licencia)]
+    variables_convertidas  = []
 
-    patron = r'^\d+(\.\d+)?$'  # Patrón para números y decimales
+    # Validar cada variable
+    for entrada, nombre_variable, entero in variables:
+        try:
+            # Convertir la entrada a cadena para validar si contiene una coma como separador decimal
+            entrada_str = str(entrada)
+            # Verificar si la entrada contiene una coma como separador decimal
+            if ',' in entrada_str:
+                raise ComaSeparador(f"ERROR: Dato inválido en {nombre_variable}: Use un punto (.) como separador decimal, no una coma (,).")
+
+            # Convertir a número flotante para asegurar que es numérico
+            valor = float(entrada)
+
+            # Si debe ser entero, verificar que no tenga decimales
+            if entero and float(entrada) != int(float(entrada)):
+                raise ValorNoEntero(f"ERROR: Dato inválido en {nombre_variable}: Se esperaba un número entero.")
+
+
+            # Verificar si es negativo
+            if valor < 0:
+                raise ValorNegativo(f"ERROR: Dato inválido en {nombre_variable}: Los números no pueden ser negativos.")
+            
+            # Convertir a entero si debe serlo
+            valor = int(valor) if entero else valor
+            
+            # Agregar la variable convertida a la lista
+            variables_convertidas.append((valor, nombre_variable, entero))
+
+        except ValueError:
+            # Si la conversión a float también falla, es porque hay caracteres no numéricos
+            raise ValorInvalido(f"ERROR: Dato inválido en {nombre_variable}: Asegúrese de que sea un número numérico, no negativo y sin letras o caracteres especiales.")
+
+    # Desempaquetar las variables convertidas
+    salario_mensual = variables_convertidas[0][0]
+    semanas_trabajadas = variables_convertidas[1][0]
+    tiempo_festivo_laborado = variables_convertidas[2][0]
+    horas_extras_diurnas = variables_convertidas[3][0]
+    horas_extras_nocturnas = variables_convertidas[4][0]
+    horas_extras_festivos = variables_convertidas[5][0]
+    dias_incapacidad = variables_convertidas[6][0]
+    dias_licencia = variables_convertidas[7][0]
+
+    TOTAL_DIAS_DEL_MES = 30
+    HORAS_DIARIAS_TRABAJADAS = 8
+    MAXIMO_SALARIO_CON_AUXILIO_TRANSPORTE = 2600000
+    TOTAL_DIAS_A_LA_SEMANA = 6
+    VALOR_POR_HORA_TRABAJADA_FESTIVO = 1.75
+    VALOR_POR_HORA_EXTRA_TRABAJADA_DIURNA = 1.25
+    VALOR_POR_HORA_EXTRA_TRABAJADA_NOCTURNA = 1.75
+    VALOR_POR_HORA_EXTRA_TRABAJADA_FESTIVO = 2
+    PORCENTAJE_A_RESTAR_POR_SALUD = 0.04
+    PORCENTAJE_A_RESTAR_POR_PENSION = 0.04
+    PORCENTAJE_A_RESTAR_POR_FONDO = 0.01
+    SALARIO_A_RESTAR_FONDO = 4000000
+    PORCENTAJE_A_RESTAR_POR_RETENCION = 0.05
+    SALARIO_A_RESTAR_RETENCION = 4300000
+    PORCENTAJE_A_RESTAR_POR_INCAPACIDAD = 0.333
+
+    if semanas_trabajadas == 0:
+        raise SemanaCero("VALOR INVÁLIDO:Las semanas trabajadas deben ser un numero mayor o igual a 1.")
     
-    # Verificar si todas las cadenas contienen solo números y puntos
-    if all(re.match(patron, var) for var in variables):
-        # Convertir los valores a sus tipos numéricos correspondientes
-        salario = float(salario)
-        tiempo_festivo_lab = float(tiempo_festivo_lab)
-        semanas_trabajadas = int(semanas_trabajadas)
-        Horas_Extras_Diu = float(Horas_Extras_Diu)
-        Horas_Extras_Noc = float(Horas_Extras_Noc)
-        Horas_Extras_Fes = float(Horas_Extras_Fes)
-        dias_incapacidad = int(dias_incapacidad)
-        dias_licencia = int(dias_licencia)
-    else:
-        raise Exception("ERROR: Los valores ingresados solo pueden contener números y puntos.")
-
-    #Validaciones básicas
-    if any(x < 0 for x in [salario, semanas_trabajadas, tiempo_festivo_lab,
-                           Horas_Extras_Diu, Horas_Extras_Noc, Horas_Extras_Fes, dias_incapacidad,dias_licencia]):
-        raise Exception("VALOR INVÁLIDO: Los valores No pueden ser negativos.")
-
-    # Validación del tipo de dato
-    if not all(isinstance(x, (int, float)) for x in [salario, semanas_trabajadas,
-                                                     tiempo_festivo_lab, Horas_Extras_Diu, 
-                                                     Horas_Extras_Noc, Horas_Extras_Fes, dias_incapacidad,dias_licencia]):
-        raise Exception("VALOR INVÁLIDO: Los valores deben ser numéricos.")
+    if tiempo_festivo_laborado > HORAS_DIARIAS_TRABAJADAS:
+        raise MasDe8HorasFestivoLaboradas("VALOR INVÁLIDO: El timepo festivo laborado no piede ser mayor a 8 horas.")
     
-    if semanas_trabajadas < 1:
-        raise Exception("VALOR INVÁLIDO:Las semanas trabajadas deben ser un numero mayor o igual a 1.")
-    
-    if tiempo_festivo_lab >8:
-        raise Exception("VALOR INVÁLIDO: El timepo festivo laborado no piede ser mayor a 8 horas.")
-   
-    semanas_trabajadas = int(semanas_trabajadas)
-    dias_trabajados = semanas_trabajadas * 6  # Convertir semanas a días trabajados
+    dias_trabajados = semanas_trabajadas *  TOTAL_DIAS_A_LA_SEMANA# Convertir semanas a días trabajados
 
     # Cálculos iniciales
-    auxilio_transporte = 162000 if salario <= 2600000 else 0
-    valor_dia = salario / 30
+    auxilio_transporte = 162000 if salario_mensual <= MAXIMO_SALARIO_CON_AUXILIO_TRANSPORTE else 0
+    salario_diario = salario_mensual / TOTAL_DIAS_DEL_MES
 
-    valor_hora = valor_dia / 8
-
+    salario_hora = salario_diario / HORAS_DIARIAS_TRABAJADAS
     # Cálculo de pagos adicionales
-    valor_festivo = tiempo_festivo_lab * valor_hora * 1.75  # Tiempo normal en festivos
-    valor_extras_diurnas = Horas_Extras_Diu * valor_hora * 1.25
-    valor_extras_nocturnas = Horas_Extras_Noc * valor_hora * 1.75
-    valor_extras_festivas = Horas_Extras_Fes * valor_hora * 2
+    ganacias_por_festivo = tiempo_festivo_laborado * salario_hora * VALOR_POR_HORA_TRABAJADA_FESTIVO 
+    ganancias_por_extras_diurnas = horas_extras_diurnas * salario_hora * VALOR_POR_HORA_EXTRA_TRABAJADA_DIURNA
+    ganancias_por_extras_nocturnas = horas_extras_nocturnas * salario_hora * VALOR_POR_HORA_EXTRA_TRABAJADA_NOCTURNA
+    ganacias_por_extras_festivas = horas_extras_festivos * salario_hora * VALOR_POR_HORA_EXTRA_TRABAJADA_FESTIVO
 
     # Ingresos Totales
-    total_pagos = (valor_dia * dias_trabajados) + auxilio_transporte + valor_festivo + \
-                  valor_extras_diurnas + valor_extras_nocturnas + valor_extras_festivas
-
+    total_ingresos = (salario_diario * dias_trabajados) + auxilio_transporte + ganacias_por_festivo + \
+                  ganancias_por_extras_diurnas + ganancias_por_extras_nocturnas + ganacias_por_extras_festivas
+          
     # Deducciones
-    salud = total_pagos * 0.04
-    pension = total_pagos * 0.04
-    fondo_solidario = total_pagos * 0.01 if salario > 4000000 else 0
-    valor_licencia = dias_licencia * valor_dia if dias_licencia > 4 else 0
-    retencion_fuente = total_pagos *0.05 if salario > 4300000 else 0
-
-    # Cálculo de deducción por incapacidad
-    deduccion_incapacidad = dias_incapacidad * valor_dia * 0.333
+    salud = total_ingresos * PORCENTAJE_A_RESTAR_POR_SALUD
+    pension = total_ingresos * PORCENTAJE_A_RESTAR_POR_PENSION
+    fondo_solidario = total_ingresos * PORCENTAJE_A_RESTAR_POR_FONDO if salario_mensual > SALARIO_A_RESTAR_FONDO else 0
+    pago_por_licencia = dias_licencia * salario_diario
+    retencion_fuente = total_ingresos *PORCENTAJE_A_RESTAR_POR_RETENCION if salario_mensual > SALARIO_A_RESTAR_RETENCION else 0
+    deduccion_incapacidad = dias_incapacidad * salario_diario * PORCENTAJE_A_RESTAR_POR_INCAPACIDAD
 
     # Valor total a recibir
-    liquidacion_total = total_pagos - (salud + pension + fondo_solidario + deduccion_incapacidad + 
-                                       valor_licencia + retencion_fuente)
+    liquidacion_total = total_ingresos - (salud + pension + fondo_solidario + deduccion_incapacidad + 
+                                       pago_por_licencia + retencion_fuente)
     
-    
-    print("------------------------------------------------")
-    print(f"Salarios: Mensual:${salario}, Diario: ${valor_dia:.2f} , Hora: ${valor_hora:.2f}") 
-    print(f"Tiempo laborado -> Semanas: {semanas_trabajadas}, Días: {dias_trabajados}")
-    if dias_incapacidad != 0 :
-        print(f"Dias de incapacidad: {dias_incapacidad}")
-    print("<<< DATOS DEVENGADOS >>>") 
-    if auxilio_transporte != 0:
-        print(F"Auxilio de transporte: ${auxilio_transporte}")
-    else:
-        print(F"Auxilio de transporte: NO APLICA")
-    print(f"Valor laborado en festivo: ${valor_festivo:.2f} | Valor de horas extras -> Diurnas: ${valor_extras_diurnas:.2f}, Nocturnas: ${valor_extras_nocturnas:.2f}, Festivo: ${valor_extras_festivas:.2f} ")
-    print(f"Total devengados: ${total_pagos:.2f}")
-    print("<<< DATOS DEDUCIDOS >>>") 
-    print(f"Valor aporte pensión: ${pension:.2f}, Valor aporte salud: ${salud:.2f}, Valor aporte fondo solidario: ${fondo_solidario:.2f}")
-    print(f"Valor incapacidades: ${deduccion_incapacidad:.2f} , Valor por licencia: ${valor_licencia:.2f}, Valor por retención de fuente: ${retencion_fuente:.2f}")
-    print(f"La liquidación de nomina total es: ${liquidacion_total:.2f} COP")
-
     return (round(liquidacion_total, 2))
