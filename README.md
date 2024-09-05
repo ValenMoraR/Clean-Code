@@ -1,39 +1,42 @@
-1) ¿Quién hizo esto?
-Steven David Oviedo Herrera
-Valentina Morales Restrepo 
+# Calculadora de Nómina
+## ¿Quién hizo esto?
+**Autores**:
+- Steven Oviedo
+- Valentina Morales
+## ¿Qué es y para qué es?
+Este proyecto es una aplicación que calcula el total a pagar de una empresa a un empleado (pago de nómina). Este pago corresponde a la diferencia entre los valores devengados y las deducciones de ley que aplican al salario del trabajador.
+## ¿Cómo lo hago funcionar?
+### Prerrequisito
+Asegurese de tener ``Python`` instalado en su sistema. Ademas de tambien añadir `unittest` que es el encargado de correr las pruebas unitarias.<br>
+De resto no hay otro prerrequisito.
+### Ejecución
+Para correr el programa por fuera del entorno de desarrollo :
+1. Navegar a la carpeta: una vez que hayas clonado el archivo, abre el cmd y navega a la carpeta donde guardaste el archivo, por ejemplo:
+   ```bash
+   cd C:\Users\Usuario\OneDrive\Documentos\U\Sexto Semestre\Código limpio\Clean-Code-1
+   ``` 
+2. Ejecuta el script principal: <br>
+   ```bash
+   src\Console\Console.py
+   python src\Console\Console.py
+   ```
 
-2) ¿Qué es y para qué es? #Describir el propósito del proyecto 
-Es una aplicación que calcula el total a pagar de una empresa a un empleado.
-Este pago corresponde a la diferencia entre los valores devengados y las deducciones de ley que le aplican.
-
-3) ¿Cómo lo hago funcionar?
-Prerrequisitos: que se debe hacer o tener antes de poder correr este proyecto
-Ejecución: como hacemos correr el programa, POR FUERA DEL ENTORNO DE DESARROLLO
-
-4) ¿Cómo está hecho?
-Describir la arquitectura del proyecto, bibliotecas usadas, dependencias de otros proyectos
-Y la organización de los módulos (que hay en cada carpeta)
-Este proyecto usa modulo como:
-re: Este módulo proporciona operaciones de coincidencia de expresiones regulares 
-
-Carpetas y archivos:
-1) scr: En esta carpeta podemos encontrar otras dos.
-    a. Console: Esta carpeta contiene el archivo con el ejecutable de la consola
-    b. LiquidaciónNomina: Esa carpeta contiene la lógica base del proyecto
-
-2) Test: En esta carpeta se encuetra el archivo que se encarga de correr las pruebas de error, extraordinarias y excepciones que tiene el código. 
-
-
------------------------------------------------------------------------------------------------------
-
-Estructura sugerida
-Carpeta src: Codigo fuente de la logica de la aplicación. Tiene subcarpetas por cada capa de la aplicacion
-Carpeta tests: Pruebas Unitarias
-Recuerde que cada carpeta de código fuente debe contener un archivo __init.py que permite que python reconozca la carpeta como un Módulo y pueda hacer import
-
-Uso
-Para ejecutar las pruebas unitarias, desde la carpeta src, use el comando
-
-cleancode-01\src> python -m unittest discover ..\tests -p '*test*.py' Para poder ejecutarlas desde la carpeta raiz, debe indicar la ruta de busqueda donde se encuentran los módulos, incluyendo las siguientes lineas al inicio del módulo de pruebas
-
-import sys sys.path.append("src")
+## ¿Cómo está hecho?
+### Arquitectura del proyecto
+El proyecto está organizado en dos carpetas principales:
+- **src**: Contiene el código fuente de la aplicación.
+   - **Console**: Contiene el script principal `Console.py` para la interacción del usuario.
+   - **LiquidacionNomina**: Contiene la lógica para el cálculo de la nómina (`Liquida_nomina1.py`).
+- **Test**: Contiene pruebas unitarias para validar la funcionalidad del código.
+### Organización del módulo
+- `src\Console\Console.py`: archivo principal para la interacción del usuario. Recopila las entradas del usuario y muestra los resultados.
+- `src\LiquidacionNomina\Liquida_nomina1.py`: contiene las funciones lógicas para el cálculo de la nomina, incluida la validación de las entradas y el cálculo del pago.
+### Dependencias
+- `unittest`: biblioteca estándar de Python para pruebas unitarias.
+## Uso
+Para ejecutar las pruebas unitarias desde la carpeta `test`, utilice el siguiente comando:
+```bash
+python Test/Liqui_test.py
+Para ejecutar el archivo principal:
+python src\Console\Console.py
+```

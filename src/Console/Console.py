@@ -1,28 +1,31 @@
 import sys
 sys.path.append("src")
-from LiquidacionNomina import Liquida_nomina1
+sys.path.append("src/LiquidacionNomina")
+from LiquidacionNomina import Liquida_nomina1, validations 
 
-def validar_vacios(valor):
-    return valor if valor else "0"
+def validate_empty(value):
+    return value if value else "0"
 
-print("<<< PROGRAMA EN EJECUCUION >>>")
+print("<<< PROGRAM RUNNING >>>")
 print("::::::::::::::::::::::::::::::::")
-print("**NOTA: Para los datos que no aplique su perfil por favor dejar vacío, solo presione ENTER y continue con el siguiente dato")
+print("**NOTE: For data that does not apply to your profile, please leave it blank, just press ENTER and continue with the next data point")
 print("----------------------------------------------------------------------")
-salario_mensual= validar_vacios(input("Ingrese el valor su ingreso mensual ($COP):"))
-semanas_trabajadas= validar_vacios(input("Ingrese el valor de las SEMANAS trabajadas a liquidar :"))
-tiempo_festivo_laborado = validar_vacios(input("Ingrese las horas trabajadas en festivo (SOLO SI APLICA):"))
-horas_extras_diurnas = validar_vacios(input("Ingrese las horas extras diurnas trabajadas (SOLO SI APLICA):"))
-horas_extras_nocturnas = validar_vacios(input("Ingrese las horas extras nocturnas trabajadas (SOLO SI APLICA):"))
-horas_extras_festivos = validar_vacios(input("Ingrese las horas extras trabajadas en día festivo (SOLO SI APLICA):"))
-dias_licencia = validar_vacios(input("Ingrese los días que tuvo de licencia en el periodo laborado (SOLO SI APLICA):"))
-dias_incapacidad = validar_vacios(input("Si tuvo incapacidad en el periodo laborado, ingrese los días, (SOLO SI APLICA):"))
+monthly_salary = validate_empty(input("Enter your monthly income ($COP):"))
+weeks_worked = validate_empty(input("Enter the number of weeks worked to settle:"))
+holiday_hours_worked = validate_empty(input("Enter the hours worked on holidays (ONLY IF APPLICABLE):"))
+overtime_day_hours = validate_empty(input("Enter the number of daytime overtime hours worked (ONLY IF APPLICABLE):"))
+overtime_night_hours = validate_empty(input("Enter the number of nighttime overtime hours worked (ONLY IF APPLICABLE):"))
+holiday_overtime_hours = validate_empty(input("Enter the overtime hours worked on holidays (ONLY IF APPLICABLE):"))
+leave_days = validate_empty(input("Enter the number of days you had on leave during the working period (ONLY IF APPLICABLE):"))
+sick_days = validate_empty(input("If you had any sick leave during the working period, enter the number of days (ONLY IF APPLICABLE):"))
 
-try:
-    resultado= Liquida_nomina1.CalcularLiquidacion(salario_mensual, semanas_trabajadas,  tiempo_festivo_laborado, 
-                                horas_extras_diurnas, horas_extras_nocturnas, horas_extras_festivos, dias_licencia,
-                                dias_incapacidad)
-    print(f"El valor total a su liquidación es de : {resultado}")
-except Exception as up_error:
-    print("****HUBO UN ERROR***")
-    print(str(up_error))
+# try:
+liquidacion = Liquida_nomina1.Liquidacion(
+    monthly_salary, weeks_worked, holiday_hours_worked,
+    overtime_day_hours, overtime_night_hours, holiday_overtime_hours, leave_days, sick_days
+)
+result= liquidacion.CalcularLiquidacion()
+print(f"The total amount of your settlement is: {result}")
+# except Exception as up_error:
+    # print("*** ERROR ***")
+    # print(str(up_error))
