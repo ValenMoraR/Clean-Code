@@ -1,5 +1,22 @@
-from exceptions import CommaSeparator, InvalidValue, NegativeValue, NotAnIntegerValue
 
+# Custom exceptions for specific validation error cases
+class NegativeValue(Exception): 
+    pass
+
+class InvalidValue(Exception): 
+    pass
+
+class NotAnIntegerValue(Exception):
+    pass
+
+class CommaSeparator(Exception):
+    pass
+
+class MoreThan8HoursWorkedOnHoliday(Exception):
+    pass
+
+class ZeroWeeksWorked(Exception):
+    pass
 
 def validate_and_convert(entry, variable_name, should_be_integer=False):
     try:
