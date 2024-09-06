@@ -40,7 +40,7 @@ class Liquidacion():
         PERCENTAGE_TO_DEDUCT_FOR_WITHHOLDING = 0.05
         SALARY_TO_DEDUCT_FOR_WITHHOLDING = 4300000
         PERCENTAGE_TO_DEDUCT_FOR_DISABILITY = 0.333
-
+        
         if self.variables['weeks_worked'][0]== 0:
             raise ZeroWeeksWorked("INVALID VALUE: Weeks worked must be a number greater than or equal to 1.")
         
