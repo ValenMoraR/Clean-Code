@@ -2,6 +2,7 @@ import unittest
 import sys
 sys.path.append("src")
 from LiquidacionNomina import Liquida_nomina1
+from LiquidacionNomina import validations
 
 class LiquidationTest(unittest.TestCase):
 
@@ -12,7 +13,7 @@ class LiquidationTest(unittest.TestCase):
 
     def test_complete_liquidation(self):
         result = Liquida_nomina1.Liquidacion(monthly_salary=1300000, weeks_worked=7, overtime_day_hours=13,
-                                                     overtime_night_hours=3, holiday_hours_worked=8, leave_days=7, sick_days=3)
+                                                     overtime_night_hours=3, time_worked_on_holidays=8, leave_days=7, sick_days=3)
         self.assertEqual(result.CalcularLiquidacion(), 1653725.0) #este está bien(medio bien), falta controlar la excepción de las 8 horas laborales para días festivos
 
     def test_liquidation_with_overtime(self):
@@ -21,20 +22,20 @@ class LiquidationTest(unittest.TestCase):
         self.assertEqual(result.CalcularLiquidacion(), 10853048.33)
     
     def test_normal_liquidation(self):
-        result = Liquida_nomina1.Liquidacion(monthly_salary=3000000, weeks_worked=4, holiday_hours_worked=8, 
-                                                     overtime_day_hours=5, overtime_night_hours=3, holiday_overtime_hours=2, 
+        result = Liquida_nomina1.Liquidacion(monthly_salary=3000000, weeks_worked=4, time_worked_on_holidays=8, 
+                                                     overtime_day_hours=5, overtime_night_hours=3, overtime_holiday_hours=2, 
                                                      sick_days=5)
         self.assertEqual(result.CalcularLiquidacion(), 2380750.00) 
         
     def test_regular_liquidation(self):
-        result = Liquida_nomina1.Liquidacion(monthly_salary=2000000, weeks_worked=14, holiday_hours_worked=5, 
-                                                     overtime_day_hours=2, overtime_night_hours=1, holiday_overtime_hours=1, 
+        result = Liquida_nomina1.Liquidacion(monthly_salary=2000000, weeks_worked=14, time_worked_on_holidays=5, 
+                                                     overtime_day_hours=2, overtime_night_hours=1, overtime_holiday_hours=1, 
                                                      sick_days=3)
         self.assertEqual(result.CalcularLiquidacion(), 5349440.0)
 
     def test_natural_liquidation(self):
-        result = Liquida_nomina1.Liquidacion(monthly_salary=2600000, weeks_worked=4, holiday_hours_worked=8, 
-                                                     overtime_day_hours=4, overtime_night_hours=2, holiday_overtime_hours=1)
+        result = Liquida_nomina1.Liquidacion(monthly_salary=2600000, weeks_worked=4, time_worked_on_holidays=8, 
+                                                     overtime_day_hours=4, overtime_night_hours=2, overtime_holiday_hours=1)
         self.assertEqual(result.CalcularLiquidacion(), 2306823.33)
 
     # Extraordinary tests (boundary or unusual cases)
@@ -70,69 +71,69 @@ class LiquidationTest(unittest.TestCase):
     def test_negative_salary(self):
         monthly_salary = -1000000
         weeks_worked = 20
-        with self.assertRaises(Liquida_nomina1.NegativeValue):
+        with self.assertRaises(validations.NegativeValue):
             result = Liquida_nomina1.Liquidacion(monthly_salary, weeks_worked)
            
     def test_weeks_worked_zero(self):
         monthly_salary = 2000000
         weeks_worked = 0 
-        with self.assertRaises(Liquida_nomina1.ZeroWeeksWorked):
+        with self.assertRaises(validations.ZeroWeeksWorked):
             result = Liquida_nomina1.Liquidacion(monthly_salary, weeks_worked)
             
     def test_negative_daytime_overtime_hours(self):
         monthly_salary = 1300000
         weeks_worked = 4
         overtime_day_hours = -3
-        with self.assertRaises(Liquida_nomina1.NegativeValue):
+        with self.assertRaises(validations.NegativeValue):
             result = Liquida_nomina1.Liquidacion(monthly_salary, weeks_worked, overtime_day_hours)
 
     def test_liquidation_more_than_8h_holiday(self):
         monthly_salary = 3000000
         weeks_worked = 4
-        holiday_hours_worked = 10
+        time_worked_on_holidays = 10
         overtime_day_hours = 5
         overtime_night_hours = 3
-        holiday_overtime_hours = 2
+        overtime_holiday_hour = 2
         sick_days = 5
-        with self.assertRaises(Liquida_nomina1.MoreThan8HoursWorkedOnHoliday):
-            result = Liquida_nomina1.Liquidacion(monthly_salary, weeks_worked, holiday_hours_worked, 
-                                                        overtime_day_hours, overtime_night_hours, holiday_overtime_hours, 
-                                                        sick_days).result
+        with self.assertRaises(validations.MoreThan8HoursWorkedOnHoliday):
+            result = Liquida_nomina1.Liquidacion(monthly_salary, weeks_worked, time_worked_on_holidays, 
+                                                        overtime_day_hours, overtime_night_hours, overtime_holiday_hour, 
+                                                        sick_days)
       
     def test_liquidation_negative_sick_days(self):
         monthly_salary = 3000000
         weeks_worked = 4
-        holiday_hours_worked = 6 
+        time_worked_on_holidays = 6 
         overtime_day_hours = 5
         overtime_night_hours = 3 
         sick_days = -5
-        with self.assertRaises(Liquida_nomina1.NegativeValue):
-            result = Liquida_nomina1.Liquidacion(monthly_salary, weeks_worked, holiday_hours_worked, 
+        with self.assertRaises(validations.NegativeValue):
+            result = Liquida_nomina1.Liquidacion(monthly_salary, weeks_worked, time_worked_on_holidays, 
                                                         overtime_day_hours, overtime_night_hours, 
-                                                        sick_days).result
+                                                        sick_days)
             
     def test_liquidation_non_numeric_salary(self):
         monthly_salary = "three million"
         weeks_worked = 7
-        holiday_hours_worked = 10
+        time_worked_on_holidays = 10
         overtime_day_hours = 5
         overtime_night_hours = 3
-        holiday_overtime_hours = 2
+        overtime_holiday_hours = 2
         sick_days = 5
-        with self.assertRaises(Liquida_nomina1.InvalidValue):
-            result = Liquida_nomina1.Liquidacion(monthly_salary, weeks_worked, holiday_hours_worked, 
-                                                        overtime_day_hours, overtime_night_hours, holiday_overtime_hours, 
-                                                        sick_days).result
+        with self.assertRaises(validations.InvalidValue):
+            result = Liquida_nomina1.Liquidacion(monthly_salary, weeks_worked, time_worked_on_holidays, 
+                                                        overtime_day_hours, overtime_night_hours, overtime_holiday_hours, 
+                                                        sick_days)
 
     def test_liquidation_non_numeric_overtime_hours(self):
-        with self.assertRaises(Liquida_nomina1.InvalidValue):
-            result = Liquida_nomina1.Liquidacion(monthly_salary=3000000, weeks_worked=4, holiday_hours_worked=10, 
-                                                        overtime_day_hours="five", overtime_night_hours=3, holiday_overtime_hours=2, sick_days=5).result       
+        with self.assertRaises(validations.InvalidValue):
+            result = Liquida_nomina1.Liquidacion(monthly_salary=3000000, weeks_worked=4, time_worked_on_holidays=10, 
+                                                        overtime_day_hours="five", overtime_night_hours=3, overtime_holiday_hours=2, sick_days=5)      
     def test_liquidation_negative_holiday_time(self):
-        with self.assertRaises(Liquida_nomina1.NegativeValue):
-            result = Liquida_nomina1.Liquidacion(monthly_salary=3000000, weeks_worked=4, holiday_hours_worked=-10, 
-                                                        overtime_day_hours=5, overtime_night_hours=3, holiday_overtime_hours=2, 
-                                                        sick_days=5).result
+        with self.assertRaises(validations.NegativeValue):
+            result = Liquida_nomina1.Liquidacion(monthly_salary=3000000, weeks_worked=4, time_worked_on_holidays=-10, 
+                                                        overtime_day_hours=5, overtime_night_hours=3, overtime_holiday_hours=2, 
+                                                        sick_days=5)
 
 if __name__ == '__main__':
     # unittest.main()
