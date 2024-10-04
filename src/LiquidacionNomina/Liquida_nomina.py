@@ -1,7 +1,7 @@
 import sys
 import re
 sys.path.append("src/LiquidacionNomina")
-from LiquidacionNomina.validations import *
+from LiquidacionNomina import Validations
 
 class Liquidacion():
     def __init__(self,monthly_salary, weeks_worked, time_worked_on_holidays=0, overtime_day_hours=0,
@@ -17,13 +17,24 @@ class Liquidacion():
             'leave_days': [leave_days, True],
             'sick_days': [sick_days, True]
         }
-        
+    
+    def Validar_salario(self):
+        if self.variables['monthly_salary'][0] < 2000:
+            raise Validations.ZeroSalary("VALOR INVÁLIDO: Asegúrese de que el valor en salario sea su salario mensual (número mayor de cero '0').")
 
+    def Validar_semanas_trabajadas(self):
+        if self.variables['weeks_worked'][0] == 0:
+            raise Validations.ZeroWeeksWorked("VALOR INVÁLIDO: Las semanas trabajadas deben ser un número mayor o igual a 1.")
+
+    def Validar_time_worked_on_holidays(self):
+        if self.variables['time_worked_on_holidays'][0] > 8:
+            raise Validations.MoreThan8HoursWorkedOnHoliday("VALOR INVÁLIDO: El tiempo festivo laborado no puede ser mayor a 8 horas.")
+    
     def CalcularLiquidacion(self):
         """
         Calculates the payroll settlement for employees in Colombia.
         """
-        self.variables = validate_variables(self.variables)
+        self.variables = Validations.validate_variables(self.variables)
         
         TOTAL_DAYS_IN_MONTH = 30
         DAILY_WORKING_HOURS = 8
@@ -40,13 +51,11 @@ class Liquidacion():
         PERCENTAGE_TO_DEDUCT_FOR_WITHHOLDING = 0.05
         SALARY_TO_DEDUCT_FOR_WITHHOLDING = 4300000
         PERCENTAGE_TO_DEDUCT_FOR_DISABILITY = 0.333
-        
-        if self.variables['weeks_worked'][0]== 0:
-            raise ZeroWeeksWorked("INVALID VALUE: Weeks worked must be a number greater than or equal to 1.")
-        
-        if self.variables['time_worked_on_holidays'][0] > DAILY_WORKING_HOURS:
-            raise MoreThan8HoursWorkedOnHoliday("INVALID VALUE: Time worked on holidays cannot be more than 8 hours.")
-        
+
+        self.Validar_salario()
+        self.Validar_semanas_trabajadas()
+        self.Validar_time_worked_on_holidays()
+
         days_worked = self.variables['weeks_worked'][0] * TOTAL_WORK_DAYS_PER_WEEK  # Convert weeks to days worked
 
         # Initial calculations
@@ -76,4 +85,20 @@ class Liquidacion():
         total_settlement = total_income - (health_deduction + pension_deduction + solidarity_fund_deduction + disability_deduction + 
                                         leave_payment + withholding_tax)
         
-        return round(total_settlement, 2)
+        detalles = {
+            'Auxilio de transporte':transport_allowance,
+            'Monto por laborar festivos': earnings_for_holidays,
+            'Monto por extras diurnos': earnings_for_overtime_day,
+            'Monto por extras nocturnos': earnings_for_overtime_night,
+            'Monto por extras en festivo': earnings_for_overtime_holidays,
+            'Total de ingresos': total_income,
+            'Resta por salud': health_deduction,
+            'Resta por pension': pension_deduction,
+            'Resta de fondo_solidario': solidarity_fund_deduction,
+            'Pagos por licencia': leave_payment,
+            'Retención de fuente': withholding_tax,
+            'Deduccion por incapacidad': disability_deduction
+        }
+
+        return (round(total_settlement, 2),detalles)
+    
