@@ -1,9 +1,11 @@
 import sys
 sys.path.append("src")
-from LiquidacionNomina import Liquida_nomina1
-6
+from LiquidacionNomina import Liquida_nomina
+
+detalles = {}
 def validate_empty(value):
     return value if value else "0"
+
 
 print("<<< PROGRAM RUNNING >>>")
 print("::::::::::::::::::::::::::::::::")
@@ -19,12 +21,13 @@ leave_days = validate_empty(input("Enter the number of days you had on leave dur
 sick_days = validate_empty(input("If you had any sick leave during the working period, enter the number of days (ONLY IF APPLICABLE):"))
 
 try:
-    liquidacion = Liquida_nomina1.Liquidacion(
-        monthly_salary, weeks_worked, time_worked_on_holidays,
-        overtime_day_hours, overtime_night_hours, overtime_holiday_hours, leave_days, sick_days
+    liquidacion = Liquida_nomina.Liquidacion(
+        monthly_salary=monthly_salary, weeks_worked=weeks_worked, time_worked_on_holidays=time_worked_on_holidays,
+                                  overtime_day_hours=overtime_day_hours, overtime_night_hours=overtime_night_hours, 
+                                overtime_holiday_hours=overtime_holiday_hours, leave_days=leave_days, sick_days=sick_days
     )
-    result= liquidacion.CalcularLiquidacion()
-    print(f"The total amount of your settlement is: {result}")
+    total_payment, detalles= liquidacion.CalcularLiquidacion()
+    print(f"The total amount of your settlement is: {total_payment}")
 except Exception as up_error:
     print("*** ERROR ***")
     print(str(up_error))
